@@ -79,7 +79,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .aporte-row { display: flex; gap: 5px; align-items: center; }
 .aporte-row input { flex: 1; background: var(--surface); border: 1px solid var(--faint); border-radius: 6px; color: #fff; padding: 7px 9px; font-size: 12px; font-family: 'DM Sans', sans-serif; }
 .aporte-row input:focus { outline: none; border-color: var(--blue); }
-.aporte-row input.inp-date { max-width: 72px; }
+.aporte-row input.inp-date { max-width: 62px; }
+.aporte-col-labels { display: grid; grid-template-columns: 62px 1fr 1fr 26px; gap: 5px; margin-bottom: 3px; }
+.aporte-col-labels span { font-size: 10px; color: var(--muted); font-weight: 500; letter-spacing: 0.3px; padding-left: 2px; }
+.inv-totals { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.inv-totals span { font-size: 11px; font-weight: 600; }
+.inv-totals .t-inv { color: var(--blue2); }
+.inv-totals .t-util { color: var(--gold-bright); }
 .btn-rm-aporte { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--faint); background: transparent; color: var(--muted); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, color .15s, border-color .15s; }
 .btn-rm-aporte:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
@@ -167,7 +173,14 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
         <span class="inv-total" id="inv-total"></span>
         <button class="btn-add-aporte" onclick="addAporte()" title="Adicionar aporte">+</button>
       </div>
+      <div class="aporte-col-labels">
+        <span>Dia</span><span>Investido</span><span>Utilizado</span><span></span>
+      </div>
       <div class="aporte-list" id="aporte-list"></div>
+      <div class="inv-totals">
+        <span class="t-inv" id="inv-total-inv"></span>
+        <span class="t-util" id="inv-total-util"></span>
+      </div>
     </div>
     <div class="form-grid">
       <div class="form-row"><label>Alcance</label><input id="i-reach" oninput="saveAndRender()"></div>
@@ -236,39 +249,50 @@ function newMonth(label) {
   return { id: Date.now() + Math.random(), label, aportes:[], reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' };
 }
 
-function somarAportes(aportes) {
-  const total = (aportes || []).reduce((acc, a) => {
-    const n = parseFloat((a.valor || '').replace(/[^\d,]/g,'').replace(',','.')) || 0;
-    return acc + n;
-  }, 0);
-  if (total === 0) return '';
-  return 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+function parseBRL(str) {
+  return parseFloat((str || '').replace(/[^\d,]/g,'').replace(',','.')) || 0;
+}
+
+function formatBRL(n) {
+  if (n === 0) return '';
+  return 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function totaisAportes(aportes) {
+  const inv  = (aportes || []).reduce((acc, a) => acc + parseBRL(a.investido), 0);
+  const util = (aportes || []).reduce((acc, a) => acc + parseBRL(a.utilizado), 0);
+  return { inv, util };
 }
 
 function renderAportes() {
   const m = getMonth();
   const list = document.getElementById('aporte-list');
-  const totalEl = document.getElementById('inv-total');
   list.innerHTML = '';
   (m.aportes || []).forEach((a, i) => {
     const row = document.createElement('div');
     row.className = 'aporte-row';
     row.innerHTML = `
-      <input class="inp-date" placeholder="Dia" value="${a.dia || ''}" oninput="updateAporte(${i},'dia',this.value)">
-      <input placeholder="Valor (R$)" value="${a.valor || ''}" oninput="updateAporte(${i},'valor',this.value)">
+      <input class="inp-date" placeholder="Dia" value="${a.dia||''}" oninput="updateAporte(${i},'dia',this.value)">
+      <input placeholder="R$ 0" value="${a.investido||''}" oninput="updateAporte(${i},'investido',this.value)">
+      <input placeholder="R$ 0" value="${a.utilizado||''}" oninput="updateAporte(${i},'utilizado',this.value)">
       <button class="btn-rm-aporte" onclick="removeAporte(${i})">&times;</button>`;
     list.appendChild(row);
   });
-  totalEl.textContent = somarAportes(m.aportes);
+  atualizaTotaisAportes(m);
+}
+
+function atualizaTotaisAportes(m) {
+  const { inv, util } = totaisAportes(m.aportes);
+  document.getElementById('inv-total-inv').textContent  = inv  ? 'Investido: '  + formatBRL(inv)  : '';
+  document.getElementById('inv-total-util').textContent = util ? 'Utilizado: ' + formatBRL(util) : '';
 }
 
 function addAporte() {
   const m = getMonth();
   if (!m.aportes) m.aportes = [];
-  m.aportes.push({ dia: '', valor: '' });
+  m.aportes.push({ dia: '', investido: '', utilizado: '' });
   persist();
   renderAportes();
-  renderReport();
 }
 
 function removeAporte(i) {
@@ -283,13 +307,13 @@ function updateAporte(i, campo, val) {
   const m = getMonth();
   m.aportes[i][campo] = val;
   persist();
-  document.getElementById('inv-total').textContent = somarAportes(m.aportes);
+  atualizaTotaisAportes(m);
   renderReport();
 }
 
 let data = JSON.parse(localStorage.getItem('nextra-v2') || 'null') || [{
   id: 1, name: 'Clínica Harmonia',
-  months: [{ id: 2, label: 'Maio 2025', aportes:[{dia:'01/05', valor:'R$ 1.500'}], reach:'84.200', cpc:'R$ 0,84', leads:'62', cpl:'R$ 24,19', roas:'4,2x', rev:'R$ 6.300', conv:'18', cpa:'R$ 83,33' }],
+  months: [{ id: 2, label: 'Maio 2025', aportes:[{dia:'01/05', investido:'R$ 1.500', utilizado:'R$ 1.260'}], reach:'84.200', cpc:'R$ 0,84', leads:'62', cpl:'R$ 24,19', roas:'4,2x', rev:'R$ 6.300', conv:'18', cpa:'R$ 83,33' }],
   activeMonth: 2
 }];
 let activeClient = data[0].id;
@@ -334,7 +358,9 @@ function renderReport() {
   const set = (id, v) => document.getElementById(id).textContent = v;
   set('o-client', c.name);
   set('o-period', m.from && m.to ? m.from + ' – ' + m.to : m.label);
-  set('o-inv',   somarAportes(m.aportes) || '');   set('o-reach', m.reach);
+  const { inv, util } = totaisAportes(m.aportes);
+  set('o-inv', formatBRL(util) || formatBRL(inv) || '');
+  set('o-reach', m.reach);
   set('o-cpc',   m.cpc);   set('o-leads', m.leads);
   set('o-cpl',   m.cpl);   set('o-roas',  m.roas);
   set('o-rev',   m.rev);   set('o-conv',  m.conv);
