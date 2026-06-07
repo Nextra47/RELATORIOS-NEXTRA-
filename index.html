@@ -136,6 +136,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
     <!-- chips de histórico -->
     <div class="history-strip" id="history-strip"></div>
+    <div class="form-grid" style="margin-top:10px;">
+      <div class="form-row"><label>De</label><input id="i-from" placeholder="01/05" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Até</label><input id="i-to" placeholder="31/05" oninput="saveAndRender()"></div>
+    </div>
 
     <!-- MÉTRICAS -->
     <div class="s-section">Métricas</div>
@@ -221,6 +225,8 @@ function getMonth()  { const c = getClient(); return c.months.find(m => m.id ===
 
 function readFields() {
   const m = getMonth();
+  m.from  = document.getElementById('i-from').value;
+  m.to    = document.getElementById('i-to').value;
   m.inv   = document.getElementById('i-inv').value;
   m.reach = document.getElementById('i-reach').value;
   m.cpc   = document.getElementById('i-cpc').value;
@@ -235,6 +241,8 @@ function readFields() {
 
 function fillFields() {
   const m = getMonth();
+  document.getElementById('i-from').value  = m.from  || '';
+  document.getElementById('i-to').value    = m.to    || '';
   document.getElementById('i-inv').value   = m.inv   || '';
   document.getElementById('i-reach').value = m.reach || '';
   document.getElementById('i-cpc').value   = m.cpc   || '';
@@ -250,7 +258,7 @@ function renderReport() {
   const c = getClient(), m = getMonth();
   const set = (id, v) => document.getElementById(id).textContent = v;
   set('o-client', c.name);
-  set('o-period', m.label);
+  set('o-period', m.from && m.to ? m.from + ' – ' + m.to : m.label);
   set('o-inv',   m.inv);   set('o-reach', m.reach);
   set('o-cpc',   m.cpc);   set('o-leads', m.leads);
   set('o-cpl',   m.cpl);   set('o-roas',  m.roas);
@@ -382,7 +390,7 @@ function removeMonth() {
 
 function clearMonth() {
   const m = getMonth();
-  Object.assign(m, { inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' });
+  Object.assign(m, { from:'', to:'', inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' });
   persist();
   fillFields();
   renderReport();
