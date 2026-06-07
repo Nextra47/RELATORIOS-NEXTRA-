@@ -65,6 +65,24 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .form-row input { width: 100%; background: var(--surface); border: 1px solid var(--faint); border-radius: 7px; color: #fff; padding: 9px 11px; font-size: 13px; font-family: 'DM Sans', sans-serif; transition: border-color .15s; }
 .form-row input:focus { outline: none; border-color: var(--blue); }
 
+/* APORTES */
+.inv-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.inv-header label { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: 0.3px; margin: 0; }
+.inv-total { font-size: 12px; font-weight: 700; color: var(--blue2); }
+.btn-add-aporte {
+  padding: 2px 8px; border-radius: 5px; border: 1px solid var(--blue);
+  background: transparent; color: var(--blue2); font-size: 16px; line-height: 1.4;
+  cursor: pointer; transition: background .15s, color .15s;
+}
+.btn-add-aporte:hover { background: var(--blue); color: #fff; }
+.aporte-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+.aporte-row { display: flex; gap: 5px; align-items: center; }
+.aporte-row input { flex: 1; background: var(--surface); border: 1px solid var(--faint); border-radius: 6px; color: #fff; padding: 7px 9px; font-size: 12px; font-family: 'DM Sans', sans-serif; }
+.aporte-row input:focus { outline: none; border-color: var(--blue); }
+.aporte-row input.inp-date { max-width: 72px; }
+.btn-rm-aporte { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--faint); background: transparent; color: var(--muted); font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .15s, color .15s, border-color .15s; }
+.btn-rm-aporte:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
 .btn-group { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
 .btn { width: 100%; border: none; border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: transform .1s, filter .15s; }
 .btn:active { transform: scale(.98); }
@@ -143,8 +161,15 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
     <!-- MÉTRICAS -->
     <div class="s-section">Métricas</div>
+    <div class="form-row">
+      <div class="inv-header">
+        <label>Investimento</label>
+        <span class="inv-total" id="inv-total"></span>
+        <button class="btn-add-aporte" onclick="addAporte()" title="Adicionar aporte">+</button>
+      </div>
+      <div class="aporte-list" id="aporte-list"></div>
+    </div>
     <div class="form-grid">
-      <div class="form-row"><label>Investimento</label><input id="i-inv" oninput="saveAndRender()"></div>
       <div class="form-row"><label>Alcance</label><input id="i-reach" oninput="saveAndRender()"></div>
       <div class="form-row"><label>CPC</label><input id="i-cpc" oninput="saveAndRender()"></div>
       <div class="form-row"><label>Leads Gerados</label><input id="i-leads" oninput="saveAndRender()"></div>
@@ -208,12 +233,63 @@ const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Ag
 const MF = ['i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
 
 function newMonth(label) {
-  return { id: Date.now() + Math.random(), label, inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' };
+  return { id: Date.now() + Math.random(), label, aportes:[], reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' };
+}
+
+function somarAportes(aportes) {
+  const total = (aportes || []).reduce((acc, a) => {
+    const n = parseFloat((a.valor || '').replace(/[^\d,]/g,'').replace(',','.')) || 0;
+    return acc + n;
+  }, 0);
+  if (total === 0) return '';
+  return 'R$ ' + total.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+}
+
+function renderAportes() {
+  const m = getMonth();
+  const list = document.getElementById('aporte-list');
+  const totalEl = document.getElementById('inv-total');
+  list.innerHTML = '';
+  (m.aportes || []).forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'aporte-row';
+    row.innerHTML = `
+      <input class="inp-date" placeholder="Dia" value="${a.dia || ''}" oninput="updateAporte(${i},'dia',this.value)">
+      <input placeholder="Valor (R$)" value="${a.valor || ''}" oninput="updateAporte(${i},'valor',this.value)">
+      <button class="btn-rm-aporte" onclick="removeAporte(${i})">&times;</button>`;
+    list.appendChild(row);
+  });
+  totalEl.textContent = somarAportes(m.aportes);
+}
+
+function addAporte() {
+  const m = getMonth();
+  if (!m.aportes) m.aportes = [];
+  m.aportes.push({ dia: '', valor: '' });
+  persist();
+  renderAportes();
+  renderReport();
+}
+
+function removeAporte(i) {
+  const m = getMonth();
+  m.aportes.splice(i, 1);
+  persist();
+  renderAportes();
+  renderReport();
+}
+
+function updateAporte(i, campo, val) {
+  const m = getMonth();
+  m.aportes[i][campo] = val;
+  persist();
+  document.getElementById('inv-total').textContent = somarAportes(m.aportes);
+  renderReport();
 }
 
 let data = JSON.parse(localStorage.getItem('nextra-v2') || 'null') || [{
   id: 1, name: 'Clínica Harmonia',
-  months: [{ id: 2, label: 'Maio 2025', inv:'R$ 1.500', reach:'84.200', cpc:'R$ 0,84', leads:'62', cpl:'R$ 24,19', roas:'4,2x', rev:'R$ 6.300', conv:'18', cpa:'R$ 83,33' }],
+  months: [{ id: 2, label: 'Maio 2025', aportes:[{dia:'01/05', valor:'R$ 1.500'}], reach:'84.200', cpc:'R$ 0,84', leads:'62', cpl:'R$ 24,19', roas:'4,2x', rev:'R$ 6.300', conv:'18', cpa:'R$ 83,33' }],
   activeMonth: 2
 }];
 let activeClient = data[0].id;
@@ -227,7 +303,6 @@ function readFields() {
   const m = getMonth();
   m.from  = document.getElementById('i-from').value;
   m.to    = document.getElementById('i-to').value;
-  m.inv   = document.getElementById('i-inv').value;
   m.reach = document.getElementById('i-reach').value;
   m.cpc   = document.getElementById('i-cpc').value;
   m.leads = document.getElementById('i-leads').value;
@@ -243,8 +318,8 @@ function fillFields() {
   const m = getMonth();
   document.getElementById('i-from').value  = m.from  || '';
   document.getElementById('i-to').value    = m.to    || '';
-  document.getElementById('i-inv').value   = m.inv   || '';
   document.getElementById('i-reach').value = m.reach || '';
+  renderAportes();
   document.getElementById('i-cpc').value   = m.cpc   || '';
   document.getElementById('i-leads').value = m.leads || '';
   document.getElementById('i-cpl').value   = m.cpl   || '';
@@ -259,7 +334,7 @@ function renderReport() {
   const set = (id, v) => document.getElementById(id).textContent = v;
   set('o-client', c.name);
   set('o-period', m.from && m.to ? m.from + ' – ' + m.to : m.label);
-  set('o-inv',   m.inv);   set('o-reach', m.reach);
+  set('o-inv',   somarAportes(m.aportes) || '');   set('o-reach', m.reach);
   set('o-cpc',   m.cpc);   set('o-leads', m.leads);
   set('o-cpl',   m.cpl);   set('o-roas',  m.roas);
   set('o-rev',   m.rev);   set('o-conv',  m.conv);
@@ -390,7 +465,7 @@ function removeMonth() {
 
 function clearMonth() {
   const m = getMonth();
-  Object.assign(m, { from:'', to:'', inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' });
+  Object.assign(m, { from:'', to:'', aportes:[], reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' });
   persist();
   fillFields();
   renderReport();
