@@ -7,260 +7,101 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg: #060a14;
-  --panel: #0a0e1c;
-  --surface: #111827;
-  --card: #131d2e;
-  --card-inner: #0e1726;
-  --red: #E8281E;
-  --blue: #2D6FD4;
-  --blue2: #4a8fe8;
-  --gold: #d4a017;
-  --gold-bright: #f59e0b;
-  --text: #ffffff;
-  --muted: #8898aa;
-  --faint: #1e2a3a;
+  --bg: #060a14; --panel: #0a0e1c; --surface: #111827;
+  --card: #131d2e; --red: #E8281E; --blue: #2D6FD4; --blue2: #4a8fe8;
+  --gold: #d4a017; --gold-bright: #f59e0b; --text: #ffffff;
+  --muted: #8898aa; --faint: #1e2a3a;
 }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.page-wrap { display: grid; grid-template-columns: 360px 1fr; min-height: 100vh; }
 
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-}
-
-.page-wrap {
-  display: grid;
-  grid-template-columns: 360px 1fr;
-  min-height: 100vh;
-}
-
-/* ---------------- SIDEBAR ---------------- */
-.sidebar {
-  background: var(--panel);
-  border-right: 1px solid var(--faint);
-  padding: 24px 22px;
-  overflow-y: auto;
-  position: sticky;
-  top: 0;
-  height: 100vh;
-}
-.sidebar-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  letter-spacing: 2px;
-}
+/* SIDEBAR */
+.sidebar { background: var(--panel); border-right: 1px solid var(--faint); padding: 24px 22px; overflow-y: auto; position: sticky; top: 0; height: 100vh; }
+.sidebar-logo { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 2px; }
 .sidebar-logo .ne { color: var(--red); }
 .sidebar-logo .xtra { color: #fff; }
-.sidebar-subtitle {
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--faint);
-}
+.sidebar-subtitle { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--faint); }
 
-/* ---------------- CLIENT SELECT ---------------- */
-.client-select-wrap {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-.client-select-wrap select {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--faint);
-  border-radius: 7px;
-  color: #fff;
-  padding: 9px 11px;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  transition: border-color .15s;
-  appearance: none;
+/* SECTION LABEL */
+.s-section { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--blue2); font-weight: 700; margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(45,111,212,0.2); }
+
+/* SELECT ROW */
+.sel-row { display: flex; gap: 6px; align-items: center; margin-bottom: 12px; }
+.sel-row select {
+  flex: 1; background: var(--surface); border: 1px solid var(--faint); border-radius: 7px;
+  color: #fff; padding: 9px 28px 9px 11px; font-size: 13px; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: border-color .15s; appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238898aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  padding-right: 28px;
+  background-repeat: no-repeat; background-position: right 10px center;
 }
-.client-select-wrap select:focus { outline: none; border-color: var(--blue); }
-.client-select-wrap select option { background: #111827; }
-.btn-add-client {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
-  border: 1.5px solid var(--blue);
-  background: transparent;
-  color: var(--blue2);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s, color .15s;
-  flex-shrink: 0;
+.sel-row select:focus { outline: none; border-color: var(--blue); }
+.sel-row select option { background: #111827; }
+.icon-btn {
+  width: 34px; height: 34px; border-radius: 7px; border: 1.5px solid var(--faint);
+  background: transparent; color: var(--muted); font-size: 18px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s, border-color .15s; flex-shrink: 0;
 }
-.btn-add-client:hover { background: var(--blue); color: #fff; }
-.btn-remove-client {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
-  border: 1.5px solid var(--faint);
-  background: transparent;
-  color: var(--muted);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background .15s, color .15s, border-color .15s;
-  flex-shrink: 0;
-}
-.btn-remove-client:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.icon-btn.blue { border-color: var(--blue); color: var(--blue2); font-size: 20px; }
+.icon-btn.blue:hover { background: var(--blue); color: #fff; }
+.icon-btn.red:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
-/* ---------------- FORM SECTIONS ---------------- */
-.s-section {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--blue2);
-  font-weight: 700;
-  margin: 20px 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid rgba(45,111,212,0.2);
+/* HISTORY STRIP */
+.history-strip { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 4px; }
+.hist-chip {
+  padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  border: 1px solid var(--faint); background: var(--surface); color: var(--muted);
+  cursor: pointer; transition: border-color .15s, color .15s, background .15s;
+  white-space: nowrap;
 }
+.hist-chip:hover { border-color: var(--blue2); color: #fff; }
+.hist-chip.active { border-color: var(--blue); background: rgba(45,111,212,0.15); color: var(--blue2); }
+
+/* FORM */
 .form-row { margin-bottom: 12px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.form-row label {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 5px;
-  font-weight: 500;
-  letter-spacing: 0.3px;
-}
-.form-row input {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--faint);
-  border-radius: 7px;
-  color: #fff;
-  padding: 9px 11px;
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  transition: border-color .15s;
-}
+.form-row label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; font-weight: 500; letter-spacing: 0.3px; }
+.form-row input { width: 100%; background: var(--surface); border: 1px solid var(--faint); border-radius: 7px; color: #fff; padding: 9px 11px; font-size: 13px; font-family: 'DM Sans', sans-serif; transition: border-color .15s; }
 .form-row input:focus { outline: none; border-color: var(--blue); }
 
 .btn-group { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
-.btn {
-  width: 100%;
-  border: none;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  transition: transform .1s, filter .15s;
-}
+.btn { width: 100%; border: none; border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: transform .1s, filter .15s; }
 .btn:active { transform: scale(.98); }
 .btn-pdf { background: var(--red); color: #fff; }
 .btn-pdf:hover { filter: brightness(1.1); }
 .btn-clear { background: transparent; color: var(--muted); border: 1px solid var(--faint); }
 .btn-clear:hover { color: #fff; border-color: var(--muted); }
 
-/* ---------------- REPORT ---------------- */
-.report-area {
-  padding: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-.report {
-  width: 100%;
-  max-width: 920px;
-  background: linear-gradient(160deg, #0c1322 0%, #0a0f1c 100%);
-  border: 1px solid var(--faint);
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 30px 80px rgba(0,0,0,.5);
-}
-
-/* header */
-.r-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 26px 34px;
-  border-bottom: 1px solid var(--faint);
-  background: rgba(255,255,255,0.015);
-}
+/* REPORT */
+.report-area { padding: 40px; display: flex; justify-content: center; align-items: flex-start; }
+.report { width: 100%; max-width: 920px; background: linear-gradient(160deg,#0c1322 0%,#0a0f1c 100%); border: 1px solid var(--faint); border-radius: 18px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.r-header { display: flex; align-items: center; justify-content: space-between; padding: 26px 34px; border-bottom: 1px solid var(--faint); background: rgba(255,255,255,0.015); }
 .r-logo { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; line-height: 1; }
-.r-logo .ne { color: var(--red); }
-.r-logo .xtra { color: #fff; }
+.r-logo .ne { color: var(--red); } .r-logo .xtra { color: #fff; }
 .r-logo small { display:block; font-family:'DM Sans'; font-size:9px; letter-spacing:3px; color:var(--muted); margin-top:3px; }
 .r-title-block { text-align: center; }
 .r-title { font-family:'Bebas Neue',sans-serif; font-size: 32px; letter-spacing: 3px; }
 .r-client { font-size: 13px; color: var(--blue2); font-weight: 600; margin-top: 2px; }
 .r-period { text-align: right; font-size: 12px; color: var(--muted); }
 .r-period strong { display:block; color:#fff; font-size:13px; font-weight:600; }
-
-/* metrics */
 .r-body { padding: 30px 34px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.metric {
-  background: var(--card);
-  border: 1px solid var(--faint);
-  border-radius: 12px;
-  padding: 18px 16px;
-  position: relative;
-  overflow: hidden;
-}
+.metric-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.metric { background: var(--card); border: 1px solid var(--faint); border-radius: 12px; padding: 18px 16px; position: relative; overflow: hidden; }
 .metric::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background: var(--blue); }
 .metric.red::before { background: var(--red); }
 .metric-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight:600; }
 .metric-value { font-family:'Bebas Neue',sans-serif; font-size: 30px; letter-spacing: 1px; line-height: 1; }
-
-/* receita card */
-.receita {
-  background: linear-gradient(165deg, rgba(212,160,23,0.12), rgba(212,160,23,0.03));
-  border: 1.5px solid var(--gold);
-  border-radius: 14px;
-  padding: 26px 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 22px;
-}
+.receita { background: linear-gradient(165deg,rgba(212,160,23,0.12),rgba(212,160,23,0.03)); border: 1.5px solid var(--gold); border-radius: 14px; padding: 26px 24px; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
 .receita-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-bright); font-weight: 700; }
 .receita-main { font-family:'Bebas Neue',sans-serif; font-size: 48px; color: #fff; line-height: .9; }
 .receita-sub { display: flex; justify-content: space-between; gap: 14px; padding-top: 18px; border-top: 1px solid rgba(212,160,23,0.25); }
 .receita-sub div { flex: 1; }
 .receita-sub .lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
 .receita-sub .val { font-family:'Bebas Neue',sans-serif; font-size: 24px; }
-
-/* footer */
-.r-footer {
-  padding: 18px 34px;
-  border-top: 1px solid var(--faint);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 11px;
-  color: var(--muted);
-  background: rgba(0,0,0,0.2);
-}
+.r-footer { padding: 18px 34px; border-top: 1px solid var(--faint); display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--muted); background: rgba(0,0,0,0.2); }
 .r-footer .contact { display: flex; gap: 18px; }
 
-/* ---------------- PRINT ---------------- */
 @media print {
   @page { size: A4 landscape; margin: 0; }
   body { background: #fff; }
@@ -274,51 +115,54 @@ body {
 <body>
 <div class="page-wrap">
 
-  <!-- SIDEBAR EDITOR -->
   <aside class="sidebar">
     <div class="sidebar-logo"><span class="ne">NE</span><span class="xtra">XTRA</span></div>
     <div class="sidebar-subtitle">Resumo Executivo · Editor</div>
 
-    <div class="s-section">Cliente & Período</div>
-    <div class="form-row">
-      <label>Nome do Cliente</label>
-      <div class="client-select-wrap">
-        <select id="client-select" onchange="switchClient()"></select>
-        <button class="btn-add-client" onclick="addClient()" title="Novo cliente">+</button>
-        <button class="btn-remove-client" onclick="removeClient()" title="Remover cliente">&times;</button>
-      </div>
-    </div>
-    <div class="form-grid">
-      <div class="form-row"><label>De</label><input id="i-from" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>Até</label><input id="i-to" value="" oninput="saveAndRender()"></div>
+    <!-- CLIENTE -->
+    <div class="s-section">Cliente</div>
+    <div class="sel-row">
+      <select id="client-select" onchange="switchClient()"></select>
+      <button class="icon-btn blue" onclick="addClient()" title="Novo cliente">+</button>
+      <button class="icon-btn red" onclick="removeClient()" title="Remover cliente">&times;</button>
     </div>
 
+    <!-- MÊS -->
+    <div class="s-section">Período</div>
+    <div class="sel-row">
+      <select id="month-select" onchange="switchMonth()"></select>
+      <button class="icon-btn blue" onclick="addMonth()" title="Novo mês">+</button>
+      <button class="icon-btn red" onclick="removeMonth()" title="Remover mês">&times;</button>
+    </div>
+    <!-- chips de histórico -->
+    <div class="history-strip" id="history-strip"></div>
+
+    <!-- MÉTRICAS -->
     <div class="s-section">Métricas</div>
     <div class="form-grid">
-      <div class="form-row"><label>Investimento</label><input id="i-inv" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>Alcance</label><input id="i-reach" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>CPC</label><input id="i-cpc" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>Leads Gerados</label><input id="i-leads" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>CPL</label><input id="i-cpl" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>ROAS</label><input id="i-roas" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Investimento</label><input id="i-inv" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Alcance</label><input id="i-reach" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPC</label><input id="i-cpc" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Leads Gerados</label><input id="i-leads" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPL</label><input id="i-cpl" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>ROAS</label><input id="i-roas" oninput="saveAndRender()"></div>
     </div>
 
     <div class="s-section">Receita</div>
-    <div class="form-row"><label>Receita Gerada</label><input id="i-rev" value="" oninput="saveAndRender()"></div>
+    <div class="form-row"><label>Receita Gerada</label><input id="i-rev" oninput="saveAndRender()"></div>
     <div class="form-grid">
-      <div class="form-row"><label>Conversões</label><input id="i-conv" value="" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>CPA</label><input id="i-cpa" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Conversões</label><input id="i-conv" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPA</label><input id="i-cpa" oninput="saveAndRender()"></div>
     </div>
 
     <div class="btn-group">
       <button class="btn btn-pdf" onclick="window.print()">📄 EXPORTAR PDF</button>
-      <button class="btn btn-clear" onclick="clearCurrent()">Limpar dados do cliente</button>
+      <button class="btn btn-clear" onclick="clearMonth()">Limpar dados do mês</button>
     </div>
   </aside>
 
-  <!-- REPORT PREVIEW -->
   <main class="report-area">
-    <div class="report" id="report">
+    <div class="report">
       <div class="r-header">
         <div class="r-logo"><span class="ne">NE</span><span class="xtra">XTRA</span><small>DIGITAL</small></div>
         <div class="r-title-block">
@@ -327,7 +171,6 @@ body {
         </div>
         <div class="r-period">Período<strong id="o-period"></strong></div>
       </div>
-
       <div class="r-body">
         <div class="metric-grid">
           <div class="metric"><div class="metric-label">Investimento Total</div><div class="metric-value" id="o-inv"></div></div>
@@ -337,7 +180,6 @@ body {
           <div class="metric red"><div class="metric-label">CPL</div><div class="metric-value" id="o-cpl"></div></div>
           <div class="metric red"><div class="metric-label">ROAS</div><div class="metric-value" id="o-roas"></div></div>
         </div>
-
         <div class="receita">
           <div>
             <div class="receita-label">Receita Gerada</div>
@@ -349,120 +191,208 @@ body {
           </div>
         </div>
       </div>
-
       <div class="r-footer">
         <div>@digital_nextra</div>
-        <div class="contact">
-          <span>(47) 98860-8831</span>
-          <span>contato@nextradigital.com.br</span>
-        </div>
+        <div class="contact"><span>(47) 98860-8831</span><span>contato@nextradigital.com.br</span></div>
       </div>
     </div>
   </main>
 
 </div>
-
 <script>
-const FIELDS = ['i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MF = ['i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
 
-let clients = JSON.parse(localStorage.getItem('nextra-clients') || 'null') || [
-  { id: 1, name: 'Clínica Harmonia', 'i-from': '01/05', 'i-to': '31/05',
-    'i-inv': 'R$ 1.500', 'i-reach': '84.200', 'i-cpc': 'R$ 0,84',
-    'i-leads': '62', 'i-cpl': 'R$ 24,19', 'i-roas': '4,2x',
-    'i-rev': 'R$ 6.300', 'i-conv': '18', 'i-cpa': 'R$ 83,33' }
-];
-let activeId = clients[0].id;
-let nextId = Math.max(...clients.map(c => c.id)) + 1;
+function newMonth(label) {
+  return { id: Date.now() + Math.random(), label, inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' };
+}
 
-function save() { localStorage.setItem('nextra-clients', JSON.stringify(clients)); }
-function getActive() { return clients.find(c => c.id === activeId); }
+let data = JSON.parse(localStorage.getItem('nextra-v2') || 'null') || [{
+  id: 1, name: 'Clínica Harmonia',
+  months: [{ id: 2, label: 'Maio 2025', inv:'R$ 1.500', reach:'84.200', cpc:'R$ 0,84', leads:'62', cpl:'R$ 24,19', roas:'4,2x', rev:'R$ 6.300', conv:'18', cpa:'R$ 83,33' }],
+  activeMonth: 2
+}];
+let activeClient = data[0].id;
+let nid = 100;
 
-function renderSelect() {
+function persist() { localStorage.setItem('nextra-v2', JSON.stringify(data)); }
+function getClient() { return data.find(c => c.id === activeClient); }
+function getMonth()  { const c = getClient(); return c.months.find(m => m.id === c.activeMonth); }
+
+function readFields() {
+  const m = getMonth();
+  m.inv   = document.getElementById('i-inv').value;
+  m.reach = document.getElementById('i-reach').value;
+  m.cpc   = document.getElementById('i-cpc').value;
+  m.leads = document.getElementById('i-leads').value;
+  m.cpl   = document.getElementById('i-cpl').value;
+  m.roas  = document.getElementById('i-roas').value;
+  m.rev   = document.getElementById('i-rev').value;
+  m.conv  = document.getElementById('i-conv').value;
+  m.cpa   = document.getElementById('i-cpa').value;
+  persist();
+}
+
+function fillFields() {
+  const m = getMonth();
+  document.getElementById('i-inv').value   = m.inv   || '';
+  document.getElementById('i-reach').value = m.reach || '';
+  document.getElementById('i-cpc').value   = m.cpc   || '';
+  document.getElementById('i-leads').value = m.leads || '';
+  document.getElementById('i-cpl').value   = m.cpl   || '';
+  document.getElementById('i-roas').value  = m.roas  || '';
+  document.getElementById('i-rev').value   = m.rev   || '';
+  document.getElementById('i-conv').value  = m.conv  || '';
+  document.getElementById('i-cpa').value   = m.cpa   || '';
+}
+
+function renderReport() {
+  const c = getClient(), m = getMonth();
+  const set = (id, v) => document.getElementById(id).textContent = v;
+  set('o-client', c.name);
+  set('o-period', m.label);
+  set('o-inv',   m.inv);   set('o-reach', m.reach);
+  set('o-cpc',   m.cpc);   set('o-leads', m.leads);
+  set('o-cpl',   m.cpl);   set('o-roas',  m.roas);
+  set('o-rev',   m.rev);   set('o-conv',  m.conv);
+  set('o-cpa',   m.cpa);
+}
+
+function renderClientSelect() {
   const sel = document.getElementById('client-select');
   sel.innerHTML = '';
-  clients.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c.id;
-    opt.textContent = c.name || 'Novo Cliente';
-    if (c.id === activeId) opt.selected = true;
-    sel.appendChild(opt);
+  data.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id; o.textContent = c.name;
+    if (c.id === activeClient) o.selected = true;
+    sel.appendChild(o);
   });
 }
 
-function loadFields() {
-  const c = getActive();
-  FIELDS.forEach(id => { document.getElementById(id).value = c[id] || ''; });
+function renderMonthSelect() {
+  const c = getClient();
+  const sel = document.getElementById('month-select');
+  sel.innerHTML = '';
+  c.months.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m.id; o.textContent = m.label;
+    if (m.id === c.activeMonth) o.selected = true;
+    sel.appendChild(o);
+  });
+  // chips histórico
+  const strip = document.getElementById('history-strip');
+  strip.innerHTML = '';
+  c.months.forEach(m => {
+    const chip = document.createElement('span');
+    chip.className = 'hist-chip' + (m.id === c.activeMonth ? ' active' : '');
+    chip.textContent = m.label;
+    chip.onclick = () => { readFields(); c.activeMonth = m.id; persist(); fillFields(); renderMonthSelect(); renderReport(); };
+    strip.appendChild(chip);
+  });
 }
 
-function saveFields() {
-  const c = getActive();
-  FIELDS.forEach(id => { c[id] = document.getElementById(id).value; });
-  save();
-}
-
-function render() {
-  const c = getActive();
-  const set = (id, val) => document.getElementById(id).textContent = val;
-  set('o-client', c.name || '');
-  set('o-period', (c['i-from'] || '') + (c['i-to'] ? ' – ' + c['i-to'] : ''));
-  set('o-inv',   c['i-inv']   || ''); set('o-reach', c['i-reach'] || '');
-  set('o-cpc',   c['i-cpc']   || ''); set('o-leads', c['i-leads'] || '');
-  set('o-cpl',   c['i-cpl']   || ''); set('o-roas',  c['i-roas']  || '');
-  set('o-rev',   c['i-rev']   || ''); set('o-conv',  c['i-conv']  || '');
-  set('o-cpa',   c['i-cpa']   || '');
-}
-
-function saveAndRender() {
-  saveFields();
-  render();
-}
+function saveAndRender() { readFields(); renderReport(); }
 
 function switchClient() {
-  saveFields();
-  activeId = parseInt(document.getElementById('client-select').value);
-  loadFields();
-  render();
+  readFields();
+  activeClient = parseInt(document.getElementById('client-select').value);
+  renderClientSelect();
+  renderMonthSelect();
+  fillFields();
+  renderReport();
+}
+
+function switchMonth() {
+  readFields();
+  getClient().activeMonth = parseFloat(document.getElementById('month-select').value);
+  persist();
+  fillFields();
+  renderMonthSelect();
+  renderReport();
 }
 
 function addClient() {
-  saveFields();
+  readFields();
   const nome = prompt('Nome do novo cliente:');
   if (!nome || !nome.trim()) return;
-  const novo = { id: nextId++, name: nome.trim(), 'i-from': '', 'i-to': '',
-    'i-inv': '', 'i-reach': '', 'i-cpc': '', 'i-leads': '',
-    'i-cpl': '', 'i-roas': '', 'i-rev': '', 'i-conv': '', 'i-cpa': '' };
-  clients.push(novo);
-  activeId = novo.id;
-  save();
-  renderSelect();
-  loadFields();
-  render();
+  const id = ++nid;
+  const hoje = new Date();
+  const label = MESES[hoje.getMonth()] + ' ' + hoje.getFullYear();
+  const m = newMonth(label);
+  data.push({ id, name: nome.trim(), months: [m], activeMonth: m.id });
+  activeClient = id;
+  persist();
+  renderClientSelect();
+  renderMonthSelect();
+  fillFields();
+  renderReport();
 }
 
 function removeClient() {
-  if (clients.length === 1) { alert('Precisa ter ao menos um cliente.'); return; }
-  const c = getActive();
-  if (!confirm('Remover "' + (c.name || 'Novo Cliente') + '"?')) return;
-  clients = clients.filter(x => x.id !== activeId);
-  activeId = clients[0].id;
-  save();
-  renderSelect();
-  loadFields();
-  render();
+  if (data.length === 1) { alert('Precisa ter ao menos um cliente.'); return; }
+  if (!confirm('Remover "' + getClient().name + '" e todos os meses?')) return;
+  data = data.filter(c => c.id !== activeClient);
+  activeClient = data[0].id;
+  persist();
+  renderClientSelect();
+  renderMonthSelect();
+  fillFields();
+  renderReport();
 }
 
-function clearCurrent() {
-  const c = getActive();
-  FIELDS.forEach(id => c[id] = '');
-  save();
-  loadFields();
-  render();
+function addMonth() {
+  readFields();
+  const c = getClient();
+  const hoje = new Date();
+  // sugerir próximo mês
+  const last = c.months[c.months.length - 1];
+  let sugestao = '';
+  if (last) {
+    const parts = last.label.split(' ');
+    const idx = MESES.indexOf(parts[0]);
+    const ano = parseInt(parts[1]) || hoje.getFullYear();
+    if (idx >= 0) {
+      const nextIdx = (idx + 1) % 12;
+      const nextAno = nextIdx === 0 ? ano + 1 : ano;
+      sugestao = MESES[nextIdx] + ' ' + nextAno;
+    }
+  }
+  const label = prompt('Nome do período (ex: Junho 2025):', sugestao || MESES[hoje.getMonth()] + ' ' + hoje.getFullYear());
+  if (!label || !label.trim()) return;
+  const m = newMonth(label.trim());
+  c.months.push(m);
+  c.activeMonth = m.id;
+  persist();
+  renderMonthSelect();
+  fillFields();
+  renderReport();
+}
+
+function removeMonth() {
+  const c = getClient();
+  if (c.months.length === 1) { alert('Precisa ter ao menos um mês.'); return; }
+  if (!confirm('Remover o mês "' + getMonth().label + '"?')) return;
+  c.months = c.months.filter(m => m.id !== c.activeMonth);
+  c.activeMonth = c.months[c.months.length - 1].id;
+  persist();
+  renderMonthSelect();
+  fillFields();
+  renderReport();
+}
+
+function clearMonth() {
+  const m = getMonth();
+  Object.assign(m, { inv:'', reach:'', cpc:'', leads:'', cpl:'', roas:'', rev:'', conv:'', cpa:'' });
+  persist();
+  fillFields();
+  renderReport();
 }
 
 // Init
-renderSelect();
-loadFields();
-render();
+renderClientSelect();
+renderMonthSelect();
+fillFields();
+renderReport();
 </script>
 </body>
 </html>
