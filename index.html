@@ -187,10 +187,10 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
     </div>
     <div class="form-grid">
       <div class="form-row"><label>Alcance</label><input id="i-reach" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>CPC</label><input id="i-cpc" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPC <span style="color:var(--blue2);font-size:9px;letter-spacing:1px">AUTO</span></label><input id="i-cpc" readonly style="color:var(--blue2);cursor:default"></div>
       <div class="form-row"><label>Leads Gerados</label><input id="i-leads" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>CPL</label><input id="i-cpl" oninput="saveAndRender()"></div>
-      <div class="form-row"><label>ROAS</label><input id="i-roas" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPL <span style="color:var(--blue2);font-size:9px;letter-spacing:1px">AUTO</span></label><input id="i-cpl" readonly style="color:var(--blue2);cursor:default"></div>
+      <div class="form-row"><label>ROAS <span style="color:var(--blue2);font-size:9px;letter-spacing:1px">AUTO</span></label><input id="i-roas" readonly style="color:var(--blue2);cursor:default"></div>
     </div>
 
     <div class="s-section">Receita</div>
@@ -328,13 +328,9 @@ function readFields() {
   m.to        = document.getElementById('i-to').value;
   m.utilizado = document.getElementById('i-utilizado').value;
   m.reach     = document.getElementById('i-reach').value;
-  m.cpc   = document.getElementById('i-cpc').value;
-  m.leads = document.getElementById('i-leads').value;
-  m.cpl   = document.getElementById('i-cpl').value;
-  m.roas  = document.getElementById('i-roas').value;
-  m.rev   = document.getElementById('i-rev').value;
-  m.conv  = document.getElementById('i-conv').value;
-  m.cpa   = document.getElementById('i-cpa').value;
+  m.leads     = document.getElementById('i-leads').value;
+  m.rev       = document.getElementById('i-rev').value;
+  m.conv      = document.getElementById('i-conv').value;
   persist();
 }
 
@@ -345,26 +341,42 @@ function fillFields() {
   document.getElementById('i-utilizado').value  = m.utilizado || '';
   document.getElementById('i-reach').value      = m.reach     || '';
   renderAportes();
-  document.getElementById('i-cpc').value   = m.cpc   || '';
   document.getElementById('i-leads').value = m.leads || '';
-  document.getElementById('i-cpl').value   = m.cpl   || '';
-  document.getElementById('i-roas').value  = m.roas  || '';
   document.getElementById('i-rev').value   = m.rev   || '';
   document.getElementById('i-conv').value  = m.conv  || '';
-  document.getElementById('i-cpa').value   = m.cpa   || '';
+}
+
+function calcMetrics(m) {
+  const util  = parseBRL(m.utilizado) || totaisAportes(m.aportes);
+  const leads = parseFloat((m.leads || '').replace(',','.')) || 0;
+  const reach = parseFloat((m.reach || '').replace(/\./g,'').replace(',','.')) || 0;
+  const rev   = parseBRL(m.rev) || 0;
+  const conv  = parseFloat((m.conv || '').replace(',','.')) || 0;
+
+  const cpc  = (util && reach)  ? formatBRL(util / reach)            : '';
+  const cpl  = (util && leads)  ? formatBRL(util / leads)            : '';
+  const roas = (util && rev)    ? (rev / util).toFixed(1).replace('.', ',') + 'x' : '';
+  const cpa  = (util && conv)   ? formatBRL(util / conv)             : '';
+
+  // preenche campos calculados na sidebar (readonly)
+  const setInp = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  setInp('i-cpc', cpc); setInp('i-cpl', cpl); setInp('i-roas', roas); setInp('i-cpa', cpa);
+
+  return { util, cpc, cpl, roas, cpa };
 }
 
 function renderReport() {
   const c = getClient(), m = getMonth();
   const set = (id, v) => document.getElementById(id).textContent = v;
+  const { util, cpc, cpl, roas, cpa } = calcMetrics(m);
   set('o-client', c.name);
   set('o-period', m.from && m.to ? m.from + ' – ' + m.to : m.label);
-  set('o-inv', m.utilizado || formatBRL(totaisAportes(m.aportes)) || '');
+  set('o-inv',   util ? formatBRL(util) : '');
   set('o-reach', m.reach);
-  set('o-cpc',   m.cpc);   set('o-leads', m.leads);
-  set('o-cpl',   m.cpl);   set('o-roas',  m.roas);
-  set('o-rev',   m.rev);   set('o-conv',  m.conv);
-  set('o-cpa',   m.cpa);
+  set('o-cpc',   cpc);   set('o-leads', m.leads);
+  set('o-cpl',   cpl);   set('o-roas',  roas);
+  set('o-rev',   m.rev); set('o-conv',  m.conv);
+  set('o-cpa',   cpa);
 }
 
 function renderClientSelect() {
