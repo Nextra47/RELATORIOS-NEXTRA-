@@ -59,10 +59,89 @@ body {
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--faint);
 }
+
+/* ---------------- CLIENT TABS ---------------- */
+.clients-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.clients-label {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--blue2);
+  font-weight: 700;
+}
+.btn-add-client {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--blue);
+  background: transparent;
+  color: var(--blue2);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+}
+.btn-add-client:hover { background: var(--blue); color: #fff; }
+
+.client-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 16px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.client-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface);
+  border: 1px solid var(--faint);
+  border-radius: 7px;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  min-width: 0;
+}
+.client-tab:hover { border-color: var(--blue); }
+.client-tab.active { border-color: var(--blue); background: rgba(45,111,212,0.1); }
+.client-tab-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+.client-tab.active .client-tab-name { color: var(--blue2); }
+.btn-remove-tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  flex-shrink: 0;
+  transition: color .15s;
+}
+.btn-remove-tab:hover { color: var(--red); }
+
+/* ---------------- FORM SECTIONS ---------------- */
 .s-section {
   font-size: 10px;
   letter-spacing: 2.5px;
@@ -217,36 +296,43 @@ body {
     <div class="sidebar-logo"><span class="ne">NE</span><span class="xtra">XTRA</span></div>
     <div class="sidebar-subtitle">Resumo Executivo · Editor</div>
 
+    <!-- CLIENT TABS -->
+    <div class="clients-header">
+      <span class="clients-label">Clientes</span>
+      <button class="btn-add-client" onclick="addClient()" title="Novo cliente">+</button>
+    </div>
+    <div class="client-tabs" id="client-tabs"></div>
+
     <div class="s-section">Cliente & Período</div>
     <div class="form-row">
       <label>Nome do Cliente</label>
-      <input id="i-client" value="Clínica Harmonia" oninput="render()">
+      <input id="i-client" value="" oninput="saveAndRender()">
     </div>
     <div class="form-grid">
-      <div class="form-row"><label>De</label><input id="i-from" value="01/05" oninput="render()"></div>
-      <div class="form-row"><label>Até</label><input id="i-to" value="31/05" oninput="render()"></div>
+      <div class="form-row"><label>De</label><input id="i-from" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Até</label><input id="i-to" value="" oninput="saveAndRender()"></div>
     </div>
 
     <div class="s-section">Métricas</div>
     <div class="form-grid">
-      <div class="form-row"><label>Investimento</label><input id="i-inv" value="R$ 1.500" oninput="render()"></div>
-      <div class="form-row"><label>Alcance</label><input id="i-reach" value="84.200" oninput="render()"></div>
-      <div class="form-row"><label>CPC</label><input id="i-cpc" value="R$ 0,84" oninput="render()"></div>
-      <div class="form-row"><label>Leads Gerados</label><input id="i-leads" value="62" oninput="render()"></div>
-      <div class="form-row"><label>CPL</label><input id="i-cpl" value="R$ 24,19" oninput="render()"></div>
-      <div class="form-row"><label>ROAS</label><input id="i-roas" value="4,2x" oninput="render()"></div>
+      <div class="form-row"><label>Investimento</label><input id="i-inv" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Alcance</label><input id="i-reach" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPC</label><input id="i-cpc" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>Leads Gerados</label><input id="i-leads" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPL</label><input id="i-cpl" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>ROAS</label><input id="i-roas" value="" oninput="saveAndRender()"></div>
     </div>
 
     <div class="s-section">Receita</div>
-    <div class="form-row"><label>Receita Gerada</label><input id="i-rev" value="R$ 6.300" oninput="render()"></div>
+    <div class="form-row"><label>Receita Gerada</label><input id="i-rev" value="" oninput="saveAndRender()"></div>
     <div class="form-grid">
-      <div class="form-row"><label>Conversões</label><input id="i-conv" value="18" oninput="render()"></div>
-      <div class="form-row"><label>CPA</label><input id="i-cpa" value="R$ 83,33" oninput="render()"></div>
+      <div class="form-row"><label>Conversões</label><input id="i-conv" value="" oninput="saveAndRender()"></div>
+      <div class="form-row"><label>CPA</label><input id="i-cpa" value="" oninput="saveAndRender()"></div>
     </div>
 
     <div class="btn-group">
       <button class="btn btn-pdf" onclick="window.print()">📄 EXPORTAR PDF</button>
-      <button class="btn btn-clear" onclick="clearAll()">Limpar para novo cliente</button>
+      <button class="btn btn-clear" onclick="clearCurrent()">Limpar dados do cliente</button>
     </div>
   </aside>
 
@@ -257,29 +343,29 @@ body {
         <div class="r-logo"><span class="ne">NE</span><span class="xtra">XTRA</span><small>DIGITAL</small></div>
         <div class="r-title-block">
           <div class="r-title">RESUMO EXECUTIVO</div>
-          <div class="r-client" id="o-client">Clínica Harmonia</div>
+          <div class="r-client" id="o-client"></div>
         </div>
-        <div class="r-period">Período<strong id="o-period">01/05 – 31/05</strong></div>
+        <div class="r-period">Período<strong id="o-period"></strong></div>
       </div>
 
       <div class="r-body">
         <div class="metric-grid">
-          <div class="metric"><div class="metric-label">Investimento Total</div><div class="metric-value" id="o-inv">R$ 1.500</div></div>
-          <div class="metric"><div class="metric-label">Alcance</div><div class="metric-value" id="o-reach">84.200</div></div>
-          <div class="metric"><div class="metric-label">CPC</div><div class="metric-value" id="o-cpc">R$ 0,84</div></div>
-          <div class="metric red"><div class="metric-label">Leads Gerados</div><div class="metric-value" id="o-leads">62</div></div>
-          <div class="metric red"><div class="metric-label">CPL</div><div class="metric-value" id="o-cpl">R$ 24,19</div></div>
-          <div class="metric red"><div class="metric-label">ROAS</div><div class="metric-value" id="o-roas">4,2x</div></div>
+          <div class="metric"><div class="metric-label">Investimento Total</div><div class="metric-value" id="o-inv"></div></div>
+          <div class="metric"><div class="metric-label">Alcance</div><div class="metric-value" id="o-reach"></div></div>
+          <div class="metric"><div class="metric-label">CPC</div><div class="metric-value" id="o-cpc"></div></div>
+          <div class="metric red"><div class="metric-label">Leads Gerados</div><div class="metric-value" id="o-leads"></div></div>
+          <div class="metric red"><div class="metric-label">CPL</div><div class="metric-value" id="o-cpl"></div></div>
+          <div class="metric red"><div class="metric-label">ROAS</div><div class="metric-value" id="o-roas"></div></div>
         </div>
 
         <div class="receita">
           <div>
             <div class="receita-label">Receita Gerada</div>
-            <div class="receita-main" id="o-rev">R$ 6.300</div>
+            <div class="receita-main" id="o-rev"></div>
           </div>
           <div class="receita-sub">
-            <div><div class="lbl">Conversões</div><div class="val" id="o-conv">18</div></div>
-            <div><div class="lbl">CPA</div><div class="val" id="o-cpa">R$ 83,33</div></div>
+            <div><div class="lbl">Conversões</div><div class="val" id="o-conv"></div></div>
+            <div><div class="lbl">CPA</div><div class="val" id="o-cpa"></div></div>
           </div>
         </div>
       </div>
@@ -297,30 +383,132 @@ body {
 </div>
 
 <script>
-function v(id){ return document.getElementById(id).value; }
-function set(id, val){ document.getElementById(id).textContent = val; }
+const FIELDS = ['i-client','i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
 
-function render(){
-  set('o-client', v('i-client'));
-  set('o-period', v('i-from') + ' – ' + v('i-to'));
-  set('o-inv', v('i-inv'));
-  set('o-reach', v('i-reach'));
-  set('o-cpc', v('i-cpc'));
-  set('o-leads', v('i-leads'));
-  set('o-cpl', v('i-cpl'));
-  set('o-roas', v('i-roas'));
-  set('o-rev', v('i-rev'));
-  set('o-conv', v('i-conv'));
-  set('o-cpa', v('i-cpa'));
+// Load clients from localStorage or start with Clínica Harmonia
+let clients = JSON.parse(localStorage.getItem('nextra-clients') || 'null') || [
+  { id: 1, 'i-client': 'Clínica Harmonia', 'i-from': '01/05', 'i-to': '31/05',
+    'i-inv': 'R$ 1.500', 'i-reach': '84.200', 'i-cpc': 'R$ 0,84',
+    'i-leads': '62', 'i-cpl': 'R$ 24,19', 'i-roas': '4,2x',
+    'i-rev': 'R$ 6.300', 'i-conv': '18', 'i-cpa': 'R$ 83,33' }
+];
+let activeId = clients[0].id;
+let nextId = Math.max(...clients.map(c => c.id)) + 1;
+
+function save() {
+  localStorage.setItem('nextra-clients', JSON.stringify(clients));
 }
 
-function clearAll(){
-  ['i-client','i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa']
-    .forEach(id => document.getElementById(id).value = '');
+function getActive() {
+  return clients.find(c => c.id === activeId);
+}
+
+function loadFields() {
+  const c = getActive();
+  FIELDS.forEach(id => {
+    document.getElementById(id).value = c[id] || '';
+  });
+}
+
+function saveFields() {
+  const c = getActive();
+  FIELDS.forEach(id => {
+    c[id] = document.getElementById(id).value;
+  });
+  save();
+}
+
+function render() {
+  const c = getActive();
+  const set = (id, val) => document.getElementById(id).textContent = val;
+  set('o-client', c['i-client'] || '');
+  set('o-period', (c['i-from'] || '') + (c['i-to'] ? ' – ' + c['i-to'] : ''));
+  set('o-inv',    c['i-inv']   || '');
+  set('o-reach',  c['i-reach'] || '');
+  set('o-cpc',    c['i-cpc']   || '');
+  set('o-leads',  c['i-leads'] || '');
+  set('o-cpl',    c['i-cpl']   || '');
+  set('o-roas',   c['i-roas']  || '');
+  set('o-rev',    c['i-rev']   || '');
+  set('o-conv',   c['i-conv']  || '');
+  set('o-cpa',    c['i-cpa']   || '');
+}
+
+function renderTabs() {
+  const container = document.getElementById('client-tabs');
+  container.innerHTML = '';
+  clients.forEach(c => {
+    const tab = document.createElement('div');
+    tab.className = 'client-tab' + (c.id === activeId ? ' active' : '');
+
+    const name = document.createElement('span');
+    name.className = 'client-tab-name';
+    name.textContent = c['i-client'] || 'Novo Cliente';
+
+    const rm = document.createElement('button');
+    rm.className = 'btn-remove-tab';
+    rm.innerHTML = '&times;';
+    rm.title = 'Remover cliente';
+    rm.onclick = (e) => { e.stopPropagation(); removeClient(c.id); };
+
+    tab.appendChild(name);
+    if (clients.length > 1) tab.appendChild(rm);
+    tab.onclick = () => switchClient(c.id);
+    container.appendChild(tab);
+  });
+}
+
+function saveAndRender() {
+  saveFields();
   render();
+  renderTabs(); // atualiza nome na aba enquanto digita
+}
+
+function switchClient(id) {
+  saveFields();
+  activeId = id;
+  loadFields();
+  render();
+  renderTabs();
+}
+
+function addClient() {
+  saveFields();
+  const novo = { id: nextId++, 'i-client': '', 'i-from': '', 'i-to': '',
+    'i-inv': '', 'i-reach': '', 'i-cpc': '', 'i-leads': '',
+    'i-cpl': '', 'i-roas': '', 'i-rev': '', 'i-conv': '', 'i-cpa': '' };
+  clients.push(novo);
+  activeId = novo.id;
+  save();
+  loadFields();
+  render();
+  renderTabs();
   document.getElementById('i-client').focus();
 }
 
+function removeClient(id) {
+  if (clients.length === 1) return;
+  clients = clients.filter(c => c.id !== id);
+  if (activeId === id) activeId = clients[0].id;
+  save();
+  loadFields();
+  render();
+  renderTabs();
+}
+
+function clearCurrent() {
+  const c = getActive();
+  FIELDS.forEach(id => c[id] = '');
+  save();
+  loadFields();
+  render();
+  renderTabs();
+  document.getElementById('i-client').focus();
+}
+
+// Init
+renderTabs();
+loadFields();
 render();
 </script>
 </body>
