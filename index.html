@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXTRA – Resumo Executivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #060a14;
+  --panel: #0a0e1c;
+  --surface: #111827;
+  --card: #131d2e;
+  --card-inner: #0e1726;
+  --red: #E8281E;
+  --blue: #2D6FD4;
+  --blue2: #4a8fe8;
+  --gold: #d4a017;
+  --gold-bright: #f59e0b;
+  --text: #ffffff;
+  --muted: #8898aa;
+  --faint: #1e2a3a;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.page-wrap {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  min-height: 100vh;
+}
+
+/* ---------------- SIDEBAR ---------------- */
+.sidebar {
+  background: var(--panel);
+  border-right: 1px solid var(--faint);
+  padding: 24px 22px;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.sidebar-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 2px;
+}
+.sidebar-logo .ne { color: var(--red); }
+.sidebar-logo .xtra { color: #fff; }
+.sidebar-subtitle {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--faint);
+}
+.s-section {
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--blue2);
+  font-weight: 700;
+  margin: 20px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(45,111,212,0.2);
+}
+.form-row { margin-bottom: 12px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-row label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 5px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.form-row input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--faint);
+  border-radius: 7px;
+  color: #fff;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color .15s;
+}
+.form-row input:focus { outline: none; border-color: var(--blue); }
+
+.btn-group { margin-top: 22px; display: flex; flex-direction: column; gap: 10px; }
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: transform .1s, filter .15s;
+}
+.btn:active { transform: scale(.98); }
+.btn-pdf { background: var(--red); color: #fff; }
+.btn-pdf:hover { filter: brightness(1.1); }
+.btn-clear { background: transparent; color: var(--muted); border: 1px solid var(--faint); }
+.btn-clear:hover { color: #fff; border-color: var(--muted); }
+
+/* ---------------- REPORT ---------------- */
+.report-area {
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.report {
+  width: 100%;
+  max-width: 920px;
+  background: linear-gradient(160deg, #0c1322 0%, #0a0f1c 100%);
+  border: 1px solid var(--faint);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0,0,0,.5);
+}
+
+/* header */
+.r-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 34px;
+  border-bottom: 1px solid var(--faint);
+  background: rgba(255,255,255,0.015);
+}
+.r-logo { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; line-height: 1; }
+.r-logo .ne { color: var(--red); }
+.r-logo .xtra { color: #fff; }
+.r-logo small { display:block; font-family:'DM Sans'; font-size:9px; letter-spacing:3px; color:var(--muted); margin-top:3px; }
+.r-title-block { text-align: center; }
+.r-title { font-family:'Bebas Neue',sans-serif; font-size: 32px; letter-spacing: 3px; }
+.r-client { font-size: 13px; color: var(--blue2); font-weight: 600; margin-top: 2px; }
+.r-period { text-align: right; font-size: 12px; color: var(--muted); }
+.r-period strong { display:block; color:#fff; font-size:13px; font-weight:600; }
+
+/* metrics */
+.r-body { padding: 30px 34px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.metric {
+  background: var(--card);
+  border: 1px solid var(--faint);
+  border-radius: 12px;
+  padding: 18px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.metric::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background: var(--blue); }
+.metric.red::before { background: var(--red); }
+.metric-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-weight:600; }
+.metric-value { font-family:'Bebas Neue',sans-serif; font-size: 30px; letter-spacing: 1px; line-height: 1; }
+
+/* receita card */
+.receita {
+  background: linear-gradient(165deg, rgba(212,160,23,0.12), rgba(212,160,23,0.03));
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  padding: 26px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+}
+.receita-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-bright); font-weight: 700; }
+.receita-main { font-family:'Bebas Neue',sans-serif; font-size: 48px; color: #fff; line-height: .9; }
+.receita-sub { display: flex; justify-content: space-between; gap: 14px; padding-top: 18px; border-top: 1px solid rgba(212,160,23,0.25); }
+.receita-sub div { flex: 1; }
+.receita-sub .lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+.receita-sub .val { font-family:'Bebas Neue',sans-serif; font-size: 24px; }
+
+/* footer */
+.r-footer {
+  padding: 18px 34px;
+  border-top: 1px solid var(--faint);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  background: rgba(0,0,0,0.2);
+}
+.r-footer .contact { display: flex; gap: 18px; }
+
+/* ---------------- PRINT ---------------- */
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body { background: #fff; }
+  .sidebar { display: none !important; }
+  .page-wrap { display: block; }
+  .report-area { padding: 0; }
+  .report { max-width: 100%; border: none; border-radius: 0; box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- SIDEBAR EDITOR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo"><span class="ne">NE</span><span class="xtra">XTRA</span></div>
+    <div class="sidebar-subtitle">Resumo Executivo · Editor</div>
+
+    <div class="s-section">Cliente & Período</div>
+    <div class="form-row">
+      <label>Nome do Cliente</label>
+      <input id="i-client" value="Clínica Harmonia" oninput="render()">
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>De</label><input id="i-from" value="01/05" oninput="render()"></div>
+      <div class="form-row"><label>Até</label><input id="i-to" value="31/05" oninput="render()"></div>
+    </div>
+
+    <div class="s-section">Métricas</div>
+    <div class="form-grid">
+      <div class="form-row"><label>Investimento</label><input id="i-inv" value="R$ 1.500" oninput="render()"></div>
+      <div class="form-row"><label>Alcance</label><input id="i-reach" value="84.200" oninput="render()"></div>
+      <div class="form-row"><label>CPC</label><input id="i-cpc" value="R$ 0,84" oninput="render()"></div>
+      <div class="form-row"><label>Leads Gerados</label><input id="i-leads" value="62" oninput="render()"></div>
+      <div class="form-row"><label>CPL</label><input id="i-cpl" value="R$ 24,19" oninput="render()"></div>
+      <div class="form-row"><label>ROAS</label><input id="i-roas" value="4,2x" oninput="render()"></div>
+    </div>
+
+    <div class="s-section">Receita</div>
+    <div class="form-row"><label>Receita Gerada</label><input id="i-rev" value="R$ 6.300" oninput="render()"></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Conversões</label><input id="i-conv" value="18" oninput="render()"></div>
+      <div class="form-row"><label>CPA</label><input id="i-cpa" value="R$ 83,33" oninput="render()"></div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-pdf" onclick="window.print()">📄 EXPORTAR PDF</button>
+      <button class="btn btn-clear" onclick="clearAll()">Limpar para novo cliente</button>
+    </div>
+  </aside>
+
+  <!-- REPORT PREVIEW -->
+  <main class="report-area">
+    <div class="report" id="report">
+      <div class="r-header">
+        <div class="r-logo"><span class="ne">NE</span><span class="xtra">XTRA</span><small>DIGITAL</small></div>
+        <div class="r-title-block">
+          <div class="r-title">RESUMO EXECUTIVO</div>
+          <div class="r-client" id="o-client">Clínica Harmonia</div>
+        </div>
+        <div class="r-period">Período<strong id="o-period">01/05 – 31/05</strong></div>
+      </div>
+
+      <div class="r-body">
+        <div class="metric-grid">
+          <div class="metric"><div class="metric-label">Investimento Total</div><div class="metric-value" id="o-inv">R$ 1.500</div></div>
+          <div class="metric"><div class="metric-label">Alcance</div><div class="metric-value" id="o-reach">84.200</div></div>
+          <div class="metric"><div class="metric-label">CPC</div><div class="metric-value" id="o-cpc">R$ 0,84</div></div>
+          <div class="metric red"><div class="metric-label">Leads Gerados</div><div class="metric-value" id="o-leads">62</div></div>
+          <div class="metric red"><div class="metric-label">CPL</div><div class="metric-value" id="o-cpl">R$ 24,19</div></div>
+          <div class="metric red"><div class="metric-label">ROAS</div><div class="metric-value" id="o-roas">4,2x</div></div>
+        </div>
+
+        <div class="receita">
+          <div>
+            <div class="receita-label">Receita Gerada</div>
+            <div class="receita-main" id="o-rev">R$ 6.300</div>
+          </div>
+          <div class="receita-sub">
+            <div><div class="lbl">Conversões</div><div class="val" id="o-conv">18</div></div>
+            <div><div class="lbl">CPA</div><div class="val" id="o-cpa">R$ 83,33</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r-footer">
+        <div>@digital_nextra</div>
+        <div class="contact">
+          <span>(47) 98860-8831</span>
+          <span>contato@nextradigital.com.br</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+function v(id){ return document.getElementById(id).value; }
+function set(id, val){ document.getElementById(id).textContent = val; }
+
+function render(){
+  set('o-client', v('i-client'));
+  set('o-period', v('i-from') + ' – ' + v('i-to'));
+  set('o-inv', v('i-inv'));
+  set('o-reach', v('i-reach'));
+  set('o-cpc', v('i-cpc'));
+  set('o-leads', v('i-leads'));
+  set('o-cpl', v('i-cpl'));
+  set('o-roas', v('i-roas'));
+  set('o-rev', v('i-rev'));
+  set('o-conv', v('i-conv'));
+  set('o-cpa', v('i-cpa'));
+}
+
+function clearAll(){
+  ['i-client','i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa']
+    .forEach(id => document.getElementById(id).value = '');
+  render();
+  document.getElementById('i-client').focus();
+}
+
+render();
+</script>
+</body>
+</html>
