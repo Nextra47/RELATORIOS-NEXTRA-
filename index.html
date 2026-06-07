@@ -64,28 +64,39 @@ body {
   border-bottom: 1px solid var(--faint);
 }
 
-/* ---------------- CLIENT TABS ---------------- */
-.clients-header {
+/* ---------------- CLIENT SELECT ---------------- */
+.client-select-wrap {
   display: flex;
+  gap: 6px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
 }
-.clients-label {
-  font-size: 10px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--blue2);
-  font-weight: 700;
+.client-select-wrap select {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--faint);
+  border-radius: 7px;
+  color: #fff;
+  padding: 9px 11px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: border-color .15s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238898aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
 }
+.client-select-wrap select:focus { outline: none; border-color: var(--blue); }
+.client-select-wrap select option { background: #111827; }
 .btn-add-client {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
   border: 1.5px solid var(--blue);
   background: transparent;
   color: var(--blue2);
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
   display: flex;
@@ -95,51 +106,23 @@ body {
   flex-shrink: 0;
 }
 .btn-add-client:hover { background: var(--blue); color: #fff; }
-
-.client-tabs {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 16px;
-  max-height: 180px;
-  overflow-y: auto;
-}
-.client-tab {
+.btn-remove-client {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
+  border: 1.5px solid var(--faint);
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--faint);
-  border-radius: 7px;
-  padding: 7px 10px;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-  min-width: 0;
-}
-.client-tab:hover { border-color: var(--blue); }
-.client-tab.active { border-color: var(--blue); background: rgba(45,111,212,0.1); }
-.client-tab-name {
-  flex: 1;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: #fff;
-}
-.client-tab.active .client-tab-name { color: var(--blue2); }
-.btn-remove-tab {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 15px;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0 2px;
+  justify-content: center;
+  transition: background .15s, color .15s, border-color .15s;
   flex-shrink: 0;
-  transition: color .15s;
 }
-.btn-remove-tab:hover { color: var(--red); }
+.btn-remove-client:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
 /* ---------------- FORM SECTIONS ---------------- */
 .s-section {
@@ -296,17 +279,14 @@ body {
     <div class="sidebar-logo"><span class="ne">NE</span><span class="xtra">XTRA</span></div>
     <div class="sidebar-subtitle">Resumo Executivo · Editor</div>
 
-    <!-- CLIENT TABS -->
-    <div class="clients-header">
-      <span class="clients-label">Clientes</span>
-      <button class="btn-add-client" onclick="addClient()" title="Novo cliente">+</button>
-    </div>
-    <div class="client-tabs" id="client-tabs"></div>
-
     <div class="s-section">Cliente & Período</div>
     <div class="form-row">
       <label>Nome do Cliente</label>
-      <input id="i-client" value="" oninput="saveAndRender()">
+      <div class="client-select-wrap">
+        <select id="client-select" onchange="switchClient()"></select>
+        <button class="btn-add-client" onclick="addClient()" title="Novo cliente">+</button>
+        <button class="btn-remove-client" onclick="removeClient()" title="Remover cliente">&times;</button>
+      </div>
     </div>
     <div class="form-grid">
       <div class="form-row"><label>De</label><input id="i-from" value="" oninput="saveAndRender()"></div>
@@ -383,11 +363,10 @@ body {
 </div>
 
 <script>
-const FIELDS = ['i-client','i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
+const FIELDS = ['i-from','i-to','i-inv','i-reach','i-cpc','i-leads','i-cpl','i-roas','i-rev','i-conv','i-cpa'];
 
-// Load clients from localStorage or start with Clínica Harmonia
 let clients = JSON.parse(localStorage.getItem('nextra-clients') || 'null') || [
-  { id: 1, 'i-client': 'Clínica Harmonia', 'i-from': '01/05', 'i-to': '31/05',
+  { id: 1, name: 'Clínica Harmonia', 'i-from': '01/05', 'i-to': '31/05',
     'i-inv': 'R$ 1.500', 'i-reach': '84.200', 'i-cpc': 'R$ 0,84',
     'i-leads': '62', 'i-cpl': 'R$ 24,19', 'i-roas': '4,2x',
     'i-rev': 'R$ 6.300', 'i-conv': '18', 'i-cpa': 'R$ 83,33' }
@@ -395,105 +374,81 @@ let clients = JSON.parse(localStorage.getItem('nextra-clients') || 'null') || [
 let activeId = clients[0].id;
 let nextId = Math.max(...clients.map(c => c.id)) + 1;
 
-function save() {
-  localStorage.setItem('nextra-clients', JSON.stringify(clients));
-}
+function save() { localStorage.setItem('nextra-clients', JSON.stringify(clients)); }
+function getActive() { return clients.find(c => c.id === activeId); }
 
-function getActive() {
-  return clients.find(c => c.id === activeId);
+function renderSelect() {
+  const sel = document.getElementById('client-select');
+  sel.innerHTML = '';
+  clients.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name || 'Novo Cliente';
+    if (c.id === activeId) opt.selected = true;
+    sel.appendChild(opt);
+  });
 }
 
 function loadFields() {
   const c = getActive();
-  FIELDS.forEach(id => {
-    document.getElementById(id).value = c[id] || '';
-  });
+  FIELDS.forEach(id => { document.getElementById(id).value = c[id] || ''; });
 }
 
 function saveFields() {
   const c = getActive();
-  FIELDS.forEach(id => {
-    c[id] = document.getElementById(id).value;
-  });
+  FIELDS.forEach(id => { c[id] = document.getElementById(id).value; });
   save();
 }
 
 function render() {
   const c = getActive();
   const set = (id, val) => document.getElementById(id).textContent = val;
-  set('o-client', c['i-client'] || '');
+  set('o-client', c.name || '');
   set('o-period', (c['i-from'] || '') + (c['i-to'] ? ' – ' + c['i-to'] : ''));
-  set('o-inv',    c['i-inv']   || '');
-  set('o-reach',  c['i-reach'] || '');
-  set('o-cpc',    c['i-cpc']   || '');
-  set('o-leads',  c['i-leads'] || '');
-  set('o-cpl',    c['i-cpl']   || '');
-  set('o-roas',   c['i-roas']  || '');
-  set('o-rev',    c['i-rev']   || '');
-  set('o-conv',   c['i-conv']  || '');
-  set('o-cpa',    c['i-cpa']   || '');
-}
-
-function renderTabs() {
-  const container = document.getElementById('client-tabs');
-  container.innerHTML = '';
-  clients.forEach(c => {
-    const tab = document.createElement('div');
-    tab.className = 'client-tab' + (c.id === activeId ? ' active' : '');
-
-    const name = document.createElement('span');
-    name.className = 'client-tab-name';
-    name.textContent = c['i-client'] || 'Novo Cliente';
-
-    const rm = document.createElement('button');
-    rm.className = 'btn-remove-tab';
-    rm.innerHTML = '&times;';
-    rm.title = 'Remover cliente';
-    rm.onclick = (e) => { e.stopPropagation(); removeClient(c.id); };
-
-    tab.appendChild(name);
-    if (clients.length > 1) tab.appendChild(rm);
-    tab.onclick = () => switchClient(c.id);
-    container.appendChild(tab);
-  });
+  set('o-inv',   c['i-inv']   || ''); set('o-reach', c['i-reach'] || '');
+  set('o-cpc',   c['i-cpc']   || ''); set('o-leads', c['i-leads'] || '');
+  set('o-cpl',   c['i-cpl']   || ''); set('o-roas',  c['i-roas']  || '');
+  set('o-rev',   c['i-rev']   || ''); set('o-conv',  c['i-conv']  || '');
+  set('o-cpa',   c['i-cpa']   || '');
 }
 
 function saveAndRender() {
   saveFields();
   render();
-  renderTabs(); // atualiza nome na aba enquanto digita
 }
 
-function switchClient(id) {
+function switchClient() {
   saveFields();
-  activeId = id;
+  activeId = parseInt(document.getElementById('client-select').value);
   loadFields();
   render();
-  renderTabs();
 }
 
 function addClient() {
   saveFields();
-  const novo = { id: nextId++, 'i-client': '', 'i-from': '', 'i-to': '',
+  const nome = prompt('Nome do novo cliente:');
+  if (!nome || !nome.trim()) return;
+  const novo = { id: nextId++, name: nome.trim(), 'i-from': '', 'i-to': '',
     'i-inv': '', 'i-reach': '', 'i-cpc': '', 'i-leads': '',
     'i-cpl': '', 'i-roas': '', 'i-rev': '', 'i-conv': '', 'i-cpa': '' };
   clients.push(novo);
   activeId = novo.id;
   save();
+  renderSelect();
   loadFields();
   render();
-  renderTabs();
-  document.getElementById('i-client').focus();
 }
 
-function removeClient(id) {
-  if (clients.length === 1) return;
-  clients = clients.filter(c => c.id !== id);
-  if (activeId === id) activeId = clients[0].id;
+function removeClient() {
+  if (clients.length === 1) { alert('Precisa ter ao menos um cliente.'); return; }
+  const c = getActive();
+  if (!confirm('Remover "' + (c.name || 'Novo Cliente') + '"?')) return;
+  clients = clients.filter(x => x.id !== activeId);
+  activeId = clients[0].id;
   save();
+  renderSelect();
   loadFields();
   render();
-  renderTabs();
 }
 
 function clearCurrent() {
@@ -502,12 +457,10 @@ function clearCurrent() {
   save();
   loadFields();
   render();
-  renderTabs();
-  document.getElementById('i-client').focus();
 }
 
 // Init
-renderTabs();
+renderSelect();
 loadFields();
 render();
 </script>
